@@ -3,17 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Basic AR Test</title>
+  <title>3D Video Experience</title>
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <a-scene embedded arjs="sourceType: webcam; trackingMethod: best; detectionMode: mono;">
-    <!-- Basic marker with a simple 3D box -->
-    <a-marker preset="hiro">
-      <a-box position="0 0.5 0" material="color: red;"></a-box>
-    </a-marker>
-    <a-entity camera></a-entity>
+  <a-scene>
+    <!-- Play video in 3D scene, without AR -->
+    <a-video src="models/Diwali_2.mp4" width="4" height="2.25" position="0 1 -5"></a-video>
+    <a-camera position="0 1.6 0"></a-camera>
   </a-scene>
 </body>
 </html>
