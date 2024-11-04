@@ -18,9 +18,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      text-align: center;
       font-size: 24px;
       cursor: pointer;
       z-index: 1;
+      flex-direction: column;
     }
 
     /* Style for the mute/unmute button */
@@ -41,8 +43,11 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
 
-  <!-- Fullscreen tap-to-start overlay -->
-  <div id="startOverlay">Tap to Start with Sound</div>
+  <!-- Fullscreen tap-to-start overlay with custom message -->
+  <div id="startOverlay">
+    Xribble Digital wishes you Happy Diwali!<br>
+    <span style="font-size: 20px; margin-top: 10px;">Experience in AR</span>
+  </div>
 
   <!-- Mute/Unmute button overlay -->
   <button id="muteButton" style="display: none;">Mute</button>
