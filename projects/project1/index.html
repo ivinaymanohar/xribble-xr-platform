@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Diwali - AR Experience</title>
   <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.2/aframe/build/aframe-ar.js"></script>
@@ -10,9 +12,16 @@
     <!-- Marker to trigger the video display -->
     <a-marker preset="hiro">
       <!-- Embed the video with a 16:9 aspect ratio -->
-      <a-video src="models/Diwali_2.mp4" width="4" height="2.25" position="0 1 0"></a-video>
+      <a-video id="myVideo" src="models/Diwali_2.mp4" width="4" height="2.25" position="0 1 0"></a-video>
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
+  <script>
+    // Ensure video plays on click due to mobile autoplay restrictions
+    document.querySelector('#myVideo').addEventListener('click', function () {
+      const videoEl = document.querySelector('#myVideo');
+      videoEl.components.material.material.map.image.play();
+    });
+  </script>
 </body>
 </html>
