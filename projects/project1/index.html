@@ -16,8 +16,9 @@
     </a-marker>
     <a-entity camera></a-entity>
   </a-scene>
+  
+  <!-- JavaScript to enable click-to-play for mobile autoplay restrictions -->
   <script>
-    // Ensure video plays on click due to mobile autoplay restrictions
     document.querySelector('#myVideo').addEventListener('click', function () {
       const videoEl = document.querySelector('#myVideo');
       videoEl.components.material.material.map.image.play();
