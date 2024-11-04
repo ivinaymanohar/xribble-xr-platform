@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Three.js Video with Tap-to-Start</title>
+  <title>Three.js Video with WebXR AR</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/webxr/ARButton.js"></script>
   <style>
     /* Fullscreen overlay style */
     #startOverlay {
@@ -53,7 +54,7 @@
   <button id="muteButton" style="display: none;">Mute</button>
 
   <script>
-    // Basic Three.js setup
+    // Basic Three.js setup for AR
     let scene, camera, renderer, videoTexture;
     const startOverlay = document.getElementById('startOverlay');
     const muteButton = document.getElementById('muteButton');
@@ -63,12 +64,16 @@
 
     // Set up camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 5;
 
-    // Set up renderer
-    renderer = new THREE.WebGLRenderer();
+    // Set up renderer with WebXR enabled
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.xr.enabled = true;
     document.body.appendChild(renderer.domElement);
+
+    // Add AR button if WebXR is supported
+    document.body.appendChild(ARButton.createButton(renderer, { requiredFeatures: ['hit-test'] }));
 
     // Load video as a texture
     const video = document.createElement('video');
@@ -90,11 +95,16 @@
         videoTexture.magFilter = THREE.LinearFilter;
         videoTexture.format = THREE.RGBFormat;
 
-        // Create a 9:16 plane for the Instagram Reel format
+        // Create a 9:16 plane for the Instagram Reel format in AR
         const geometry = new THREE.PlaneGeometry(2.25, 4);
         const material = new THREE.MeshBasicMaterial({ map: videoTexture });
         const plane = new THREE.Mesh(geometry, material);
+        plane.position.set(0, 1, -2);  // Position plane in front of the camera in AR
         scene.add(plane);
+
+        renderer.setAnimationLoop(() => {
+          renderer.render(scene, camera);
+        });
       }).catch(() => {
         // Fallback to mute if autoplay with sound fails
         video.muted = true;
@@ -110,14 +120,6 @@
       video.muted = !video.muted;
       muteButton.textContent = video.muted ? 'Unmute' : 'Mute';
     });
-
-    // Animation loop
-    function animate() {
-      requestAnimationFrame(animate);
-      renderer.render(scene, camera);
-    }
-
-    animate();
 
     // Handle window resize
     window.addEventListener('resize', () => {
