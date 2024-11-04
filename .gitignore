@@ -1,11 +1,36 @@
-.htaccess
-css.php
-rpc/
-sites/site*/admin/
-sites/site*/private/
-sites/site*/public/admin/
-sites/site*/public/setup/
-sites/site*/public/theme/
-textpattern/
-HISTORY.txt
-README.txt
+# Python code to create a .gitignore file for an AR project
+
+# Define the content of the .gitignore file
+gitignore_content = """
+# System files
+.DS_Store            # macOS
+Thumbs.db            # Windows
+desktop.ini          # Windows
+
+# Node modules (in case you add Node.js dependencies later)
+node_modules/
+
+# Temporary files and logs
+*.log
+*.tmp
+
+# Compiled and output directories (if you decide to compile any assets)
+dist/
+build/
+
+# Editor settings
+.vscode/             # Visual Studio Code settings
+.idea/               # JetBrains IDEs
+
+# 3D Model Formats (optional - if you prefer not to track large files)
+*.glb
+*.gltf
+*.obj
+*.fbx
+"""
+
+# Create and write the .gitignore file
+with open(".gitignore", "w") as file:
+    file.write(gitignore_content)
+
+print(".gitignore file created successfully!")
