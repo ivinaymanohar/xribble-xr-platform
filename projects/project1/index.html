@@ -3,49 +3,52 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR Test with Three.js and WebXR</title>
+  <title>Basic AR with three.ar.js</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/webxr/ARButton.js"></script>
+  <script src="https://raw.githack.com/google-ar/three.ar.js/master/build/three.ar.min.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
   <script>
-    // Basic AR Setup
-    let scene, camera, renderer;
+    // Basic setup for three.ar.js
+    let scene, camera, renderer, arDisplay;
 
     // Initialize the scene
     scene = new THREE.Scene();
 
-    // Set up camera
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
-    scene.add(camera);
+    // Initialize AR display
+    navigator.getVRDisplays().then((displays) => {
+      arDisplay = displays.find(display => display instanceof VRDisplay);
+      arDisplay.requestPresent([{ source: renderer.domElement }]);
 
-    // Set up renderer with WebXR enabled
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.xr.enabled = true;
-    document.body.appendChild(renderer.domElement);
+      // Set up AR camera
+      camera = new THREE.ARPerspectiveCamera(
+        60, window.innerWidth / window.innerHeight, 0.01, 1000, arDisplay
+      );
 
-    // Add AR button for WebXR
-    document.body.appendChild(ARButton.createButton(renderer));
+      // Set up renderer
+      renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-    // Create a basic 3D box
-    const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.set(0, 0, -0.5);  // Position cube 0.5 meters in front of the camera
-    scene.add(cube);
+      // Create a 3D cube
+      const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+      const cube = new THREE.Mesh(geometry, material);
+      cube.position.set(0, 0, -0.5);  // Position cube 0.5 meters in front of the camera
+      scene.add(cube);
 
-    // Animation loop
-    function animate() {
-      renderer.setAnimationLoop(() => {
+      // Render loop
+      function render() {
+        arDisplay.getFrameData(arFrameData);
+        renderer.clearDepth();
         renderer.render(scene, camera);
-      });
-    }
+        arDisplay.requestAnimationFrame(render);
+      }
 
-    animate();
+      render();
+    });
 
-    // Handle window resize
+    // Resize handler
     window.addEventListener('resize', () => {
       renderer.setSize(window.innerWidth, window.innerHeight);
       camera.aspect = window.innerWidth / window.innerHeight;
