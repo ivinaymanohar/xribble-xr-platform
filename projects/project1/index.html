@@ -3,14 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Video Experience</title>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <title>Three.js AR Experience</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/webxr/ARButton.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <a-scene>
-    <!-- Play video in 3D scene, without AR -->
-    <a-video src="models/Diwali_2.mp4" width="4" height="2.25" position="0 1 -5"></a-video>
-    <a-camera position="0 1.6 0"></a-camera>
-  </a-scene>
+  <script>
+    // Set up Three.js scene
+    let scene, camera, renderer;
+
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.xr.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    // Add AR button
+    document.body.appendChild(ARButton.createButton(renderer));
+
+    // Create a basic 3D box
+    const geometry = new THREE.BoxGeometry(0.1, 0.1, 0.1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    const cube = new THREE.Mesh(geometry, material);
+    cube.position.set(0, 0, -0.5);  // Position it 0.5 meters in front of the camera
+    scene.add(cube);
+
+    // Animation loop
+    function animate() {
+      renderer.setAnimationLoop(() => {
+        renderer.render(scene, camera);
+      });
+    }
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    });
+
+    animate();
+  </script>
 </body>
 </html>
