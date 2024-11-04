@@ -8,8 +8,8 @@
   <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/1.7.2/aframe/build/aframe-ar.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden;">
-  <a-scene embedded arjs>
-    <!-- Marker to trigger the video display -->
+  <a-scene embedded arjs="sourceType: webcam;">
+    <!-- Hiro marker to trigger the video display -->
     <a-marker preset="hiro">
       <!-- Embed the video with a 16:9 aspect ratio -->
       <a-video id="myVideo" src="models/Diwali_2.mp4" width="4" height="2.25" position="0 1 0"></a-video>
@@ -17,11 +17,16 @@
     <a-entity camera></a-entity>
   </a-scene>
   
-  <!-- JavaScript to enable click-to-play for mobile autoplay restrictions -->
+  <!-- JavaScript to enable video playback when marker is detected -->
   <script>
-    document.querySelector('#myVideo').addEventListener('click', function () {
-      const videoEl = document.querySelector('#myVideo');
-      videoEl.components.material.material.map.image.play();
+    const videoEl = document.querySelector('#myVideo');
+    videoEl.addEventListener('loadeddata', () => {
+      videoEl.play();
+    });
+    
+    // Add click-to-play functionality for mobile autoplay restrictions
+    videoEl.addEventListener('click', () => {
+      videoEl.play();
     });
   </script>
 </body>
